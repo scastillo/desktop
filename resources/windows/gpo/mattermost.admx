@@ -34,6 +34,20 @@
         <decimal value="0"/>
       </disabledValue>
     </policy>
+    <policy name="DefaultServerName" class="Both" displayName="$(string.ServerURL)" explainText="$(string.ServerURL_Explain)" key="Software\Policies\Mattermost" presentation="$(presentation.ServerURL)" >
+      <parentCategory ref="mattermost"/>
+      <supportedOn ref="SUPPORTED_MMD43"/>
+      <elements >
+        <text id="ServerURL" valueName="URL" required="true" />
+      </elements>
+    </policy>
+    <policy name="ServerURL" class="Both" displayName="$(string.ServerURL)" explainText="$(string.ServerURL_Explain)" key="Software\Policies\Mattermost" presentation="$(presentation.ServerURL)" >
+      <parentCategory ref="mattermost"/>
+      <supportedOn ref="SUPPORTED_MMD43"/>
+      <elements >
+        <text id="ServerURL" valueName="URL" required="true" />
+      </elements>
+    </policy>
     <policy name="ServerURL" class="Both" displayName="$(string.ServerURL)" explainText="$(string.ServerURL_Explain)" key="Software\Policies\Mattermost" presentation="$(presentation.ServerURL)" >
       <parentCategory ref="mattermost"/>
       <supportedOn ref="SUPPORTED_MMD43"/>
