@@ -16,15 +16,15 @@ If this policy is disabled or not configured, the Mattermost Desktop Application
 
 If this policy is disabled or not configured, it is possible to add new servers.
 </string>
-      <string id="ServerURL">Server addresses</string>
-      <string id="ServerURL_Explain">If this policy is enabled, you can set one or more Mattermost server addresses. Use the syntax Servername,https://server.com|Servername2,https://server2.com
+      <string id="DefaultServerURL">Server addresses</string>
+      <string id="DefaultServerURL_Explain">If this policy is enabled, you can set one or more Mattermost server addresses. Use the syntax Servername,https://server.com|Servername2,https://server2.com
 
 If this policy is disabled or not configured, no servers are preconfigured.</string>
     </stringTable>
     <presentationTable>
-	<presentation id="ServerURL">
+	<presentation id="DefaultServerURL">
         <text>URL:</text>
-        <textBox refId="ServerURL">
+        <textBox refId="DefaultServerURL">
           <label/>
         </textBox>
       </presentation>
