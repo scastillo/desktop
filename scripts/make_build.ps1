@@ -62,7 +62,7 @@ if ($env:APPVEYOR_REPO_TAG -eq $true) {
     # src.: https://www.appveyor.com/docs/build-configuration/#secure-variables
     Write-Host "DEBUG PFX key: $($env:encrypted_cert_private_key[0]) - $($env:encrypted_cert_private_key[$env:encrypted_cert_private_key.length - 1])"
     #ls .\resources\windows\certificate\
-    #appveyor-tools\secure-file -decrypt .\resources\windows\certificate\mattermost-desktop-windows.pfx.enc -secret "$env:encrypted_cert_private_key"
+    appveyor-tools\secure-file -decrypt .\resources\windows\certificate\mattermost-desktop-windows.pfx.enc -secret "$env:encrypted_cert_private_key"
     #ls .\resources\windows\certificate\
 
     Write-Host "We are in: $(Get-Location)"
