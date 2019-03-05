@@ -23,7 +23,7 @@ test_script:
 # src.: https://www.appveyor.com/docs/build-configuration/#secure-variables
 environment:
   encrypted_cert_private_key:
-    secure: OGm2pQKTbwb3g1q9uzUHow==
+    secure: 9k3nvcEL+YDZTH15atlEvRBO664rBEofptMmeaf8BMN8bSGOq4Darz5UhMj4blO4
 
 #install:
   #- ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
