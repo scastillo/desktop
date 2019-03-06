@@ -22,12 +22,10 @@ test_script:
 # Secure variables are not decoded during Pull Request
 # src.: https://www.appveyor.com/docs/build-configuration/#secure-variables
 environment:
-  encrypted_cert_private_key:
+  certificate_private_key_encrypted:
     secure: 9k3nvcEL+YDZTH15atlEvRBO664rBEofptMmeaf8BMN8bSGOq4Darz5UhMj4blO4
-
-#install:
-  #- ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-  #- cmd: appveyor-tools\secure-file -decrypt .\resources\windows\certificate\mattermost-desktop-windows.pfx.enc -secret %encrypted_cert_private_key%
+  certificate_decryption_key_encrypted:
+    secure: GjvvWt6sGQBJu16BR2dpZMW2eXyNB3zT2tbWN/AQxGEqjNPkXZePHWVHS/5hAFmJ
 
 artifacts:
   - path: 'release\*.msi'
