@@ -60,26 +60,29 @@ if ($env:APPVEYOR_REPO_TAG -eq $true) {
     # Secure variables are never decoded during Pull Request
     # except if the repo is private and a secure org has been created
     # src.: https://www.appveyor.com/docs/build-configuration/#secure-variables
-    Write-Host "DEBUG PFX key: $($env:certificate_private_key_encrypted)"
-    ls .\resources\windows\certificate\
     appveyor-tools\secure-file -decrypt .\resources\windows\certificate\mattermost-desktop-windows.pfx.enc -secret "$env:certificate_decryption_key_encrypted"
-    ls .\resources\windows\certificate\
 
-    Write-Host "We are in: $(Get-Location)"
     foreach ($archPath in "release\win-unpacked", "release\win-ia32-unpacked") {
 
         # Note: The C++ redistribuable files will be resigned again even if they have a
         # correct signature from Microsoft. Windows doesn't seem to complain, but we
         # don't know whether this is authorized by the Microsoft EULA.
         Get-ChildItem -path $archPath -recurse *.dll | ForEach-Object {
-            Write-Host "Signing $($_.FullName)"
-            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://tsa.starfieldtech.com /fd sha1 /td sha1 $_.FullName
-            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://tsa.starfieldtech.com /fd sha256 /td sha256 /as $_.FullName
+            Write-Host "Signing $($_.FullName) (waiting for 2 * 15 seconds)..."
+            # Waiting for at least 15 seconds is needed because these time
+            # servers usually have rate limits
+            # src.: https://web.archive.org/web/20190306223053/https://github.com/electron-userland/electron-builder/issues/2795#issuecomment-466831315
+            Start-Sleep -s 15
+            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 $_.FullName
+            Start-Sleep -s 15
+            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as $_.FullName
         }
 
-        Write-Host "Signing $archPath\Mattermost.exe"
-        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://tsa.starfieldtech.com /fd sha1 /td sha1 $archPath\Mattermost.exe
-        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://tsa.starfieldtech.com /fd sha256 /td sha256 /as $archPath\Mattermost.exe
+        Write-Host "Signing $archPath\Mattermost.exe (waiting for 2 * 15 seconds)..."
+        Start-Sleep -s 15
+        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 $archPath\Mattermost.exe
+        Start-Sleep -s 15
+        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as $archPath\Mattermost.exe
     }
 }
 
