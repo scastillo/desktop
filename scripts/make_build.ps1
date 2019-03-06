@@ -75,16 +75,16 @@ if ($env:APPVEYOR_REPO_TAG -eq $true) {
             # "SignTool Error: The specified timestamp server either could not be reached or returned an invalid response.
             # src.: https://web.archive.org/web/20190306223053/https://github.com/electron-userland/electron-builder/issues/2795#issuecomment-466831315
             Start-Sleep -s 15
-            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 $_.FullName
+            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha1 /td sha1 $_.FullName
             Start-Sleep -s 15
-            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as $_.FullName
+            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 /as $_.FullName
         }
 
         Write-Host "Signing $archPath\Mattermost.exe (waiting for 2 * 15 seconds)..."
         Start-Sleep -s 15
-        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 $archPath\Mattermost.exe
+        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha1 /td sha1 $archPath\Mattermost.exe
         Start-Sleep -s 15
-        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as $archPath\Mattermost.exe
+        signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 /as $archPath\Mattermost.exe
     }
 }
 
@@ -151,12 +151,12 @@ light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -l
 
 Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi (waiting for 2 * 15 seconds)..."
 Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
 Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
 
 Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi (waiting for 2 * 15 seconds)..."
 Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
 Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
