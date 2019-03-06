@@ -70,12 +70,14 @@ if ($env:APPVEYOR_REPO_TAG -eq $true) {
         Get-ChildItem -path $archPath -recurse *.dll | ForEach-Object {
             Write-Host "Signing $($_.FullName) (waiting for 2 * 15 seconds)..."
             # Waiting for at least 15 seconds is needed because these time
-            # servers usually have rate limits
+            # servers usually have rate limits and signtool can fail with the
+            # following error message:
+            # "SignTool Error: The specified timestamp server either could not be reached or returned an invalid response.
             # src.: https://web.archive.org/web/20190306223053/https://github.com/electron-userland/electron-builder/issues/2795#issuecomment-466831315
             Start-Sleep -s 15
-            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 $_.FullName
+            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 $_.FullName
             Start-Sleep -s 15
-            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as $_.FullName
+            signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as $_.FullName
         }
 
         Write-Host "Signing $archPath\Mattermost.exe (waiting for 2 * 15 seconds)..."
@@ -146,3 +148,15 @@ light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -l
 heat dir .\release\win-unpacked\ -o .\scripts\msi_installer_files.wxs -scom -frag -srd -sreg -gg -cg MattermostDesktopFiles -t .\scripts\msi_installer_files_replace_id.xslt -t .\scripts\msi_installer_files_set_win64.xslt -dr INSTALLDIR
 candle.exe -dPlatform=x64 .\scripts\msi_installer.wxs .\scripts\msi_installer_files.wxs -o .\scripts\
 light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -loc .\resources\windows\msi_i18n\en_US.wxl -o .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi -b ./release/win-unpacked/
+
+Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi (waiting for 2 * 15 seconds)..."
+Start-Sleep -s 15
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
+Start-Sleep -s 15
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
+
+Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi (waiting for 2 * 15 seconds)..."
+Start-Sleep -s 15
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
+Start-Sleep -s 15
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /t http://timestamp.verisign.com/scripts/timstamp.dll /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
