@@ -49,6 +49,12 @@ $msiDescriptor = [xml](Get-Content $msiDescriptorFileName)
 $msiDescriptor.Wix.Product.Version = $currentTag
 $msiDescriptor.Save($msiDescriptorFileName)
 
+Write-Host "Patching version from electron package.json..."
+$packageFileName = Join-Path -Path "$(Get-Location)" -ChildPath "src\package.json"
+$package = Get-Content $packageFileName | ConvertFrom-Json
+$package.version = $currentTag
+$package | ConvertTo-Json | Set-Content $packageFileName
+
 Write-Host "Getting list of commits for changelog..."
 $previousTag = $(Invoke-Expression "git describe --abbrev=0 --tags $(git describe --abbrev=0)^")
 $env:MATTERMOST_BUILD_CHANGELOG = $(git log --oneline --since="$(git log -1 "$previousTag" --pretty=%ad)" --until="$(git log -1 "$currentTag" --pretty=%ad)")
@@ -162,14 +168,13 @@ heat dir .\release\win-unpacked\ -o .\scripts\msi_installer_files.wxs -scom -fra
 candle.exe -dPlatform=x64 .\scripts\msi_installer.wxs .\scripts\msi_installer_files.wxs -o .\scripts\
 light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -loc .\resources\windows\msi_i18n\en_US.wxl -o .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi -b ./release/win-unpacked/
 
-Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi (waiting for 2 * 15 seconds)..."
+Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi (waiting for 15 seconds)..."
 Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
-Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
+# Dual signing is not supported on msi files. Is it recommended to sign with 256 hash.
+# src.: https://security.stackexchange.com/a/124685/84134
+# src.: https://social.msdn.microsoft.com/Forums/windowsdesktop/en-us/d4b70ecd-a883-4289-8047-cc9cde28b492#0b3e3b80-6b3b-463f-ac1e-1bf0dc831952
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi
 
 Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi (waiting for 2 * 15 seconds)..."
 Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha1 /td sha1 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
-Start-Sleep -s 15
-signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 /as .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
+signtool.exe sign /f .\resources\windows\certificate\mattermost-desktop-windows.pfx /p $env:certificate_private_key_encrypted /tr http://timestamp.digicert.com /fd sha256 /td sha256 .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi
