@@ -37,7 +37,7 @@ deploy:
     auth_token:
       secure: I2wx9gajpvBjcxtEKYoYqqmyoH/2fWQflycpwlHZY9SD9sFkPlA4CNMcF29dcI4j
     release: $(APPVEYOR_BUILD_NUMBER) ($(APPVEYOR_REPO_COMMIT)) (via AppVeyor)
-    description: 'Dev version'
+    description: $(MATTERMOST_BUILD_CHANGELOG)
     artifact: MsiInstallers
     prerelease: true
     force_update: true
@@ -48,7 +48,7 @@ deploy:
     auth_token:
       secure: I2wx9gajpvBjcxtEKYoYqqmyoH/2fWQflycpwlHZY9SD9sFkPlA4CNMcF29dcI4j
     release: $(APPVEYOR_REPO_TAG_NAME) ($(MATTERMOST_BUILD_DATE)) (via AppVeyor)
-    description: 'Release'
+    description: $(MATTERMOST_BUILD_CHANGELOG)
     artifact: MsiInstallers
     draft: true
     force_update: false

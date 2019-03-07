@@ -40,6 +40,19 @@ $env:Path += ";$signToolDir"
 Write-Host "Getting build date..."
 $env:MATTERMOST_BUILD_DATE = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd")
 
+Write-Host "Getting latest git tag..."
+$currentTag = $(git describe --abbrev=0)
+
+Write-Host "Patching version from msi xml descriptor..."
+$msiDescriptorFileName = Join-Path -Path "$(Get-Location)" -ChildPath "scripts\msi_installer.wxs"
+$msiDescriptor = [xml](Get-Content $msiDescriptorFileName)
+$msiDescriptor.Wix.Product.Version = $currentTag
+$msiDescriptor.Save($msiDescriptorFileName)
+
+Write-Host "Getting list of commits for changelog..."
+$previousTag = $(Invoke-Expression "git describe --abbrev=0 --tags $(git describe --abbrev=0)^")
+$env:MATTERMOST_BUILD_CHANGELOG = $(git log --oneline --since="$(git log -1 "$previousTag" --pretty=%ad)" --until="$(git log -1 "$currentTag" --pretty=%ad)")
+
 Write-Host "Working directory:"
 Get-Location
 Write-Host "Installing dependencies (running npm install)..."
