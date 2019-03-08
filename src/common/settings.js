@@ -215,6 +215,7 @@ function init(app) {
   if (process.platform == "win32") {
     // If the user cannot have their own servers, overwrite by the ones
     // defined in GPO.
+    try {
     if (isAddingNewServerPreventedByGPO()) {
       try {
         config.teams = getDefaultServerListFromGPO();
@@ -238,6 +239,9 @@ function init(app) {
           "but no default server has been found by GPO.");
       }
     }
+  } catch(e) {
+    console.log("An error occurred with isAddingNewServerPreventedByGPO():" + e);
+  }
   }
   
   if (config.enableHardwareAcceleration === false) {
