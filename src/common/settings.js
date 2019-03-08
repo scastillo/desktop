@@ -195,6 +195,7 @@ function init(config, app) {
     config = readFileSync(configFile);
     if (config.version !== defaultPreferences.version) {
       config = upgrade(config);
+      console.log("DEBUG init cond writeSync");
       writeFileSync(configFile, config);
     }
   } catch (e) {
