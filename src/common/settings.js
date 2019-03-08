@@ -128,6 +128,7 @@ console.log("IN getDefaultServerListFromGPO");
       server.index = nameTokenized[0];
     }
     server.url = registryItems[i].value;
+    console.log("SERVER URL" + server.url);
     servers.push(server);
   }
 
