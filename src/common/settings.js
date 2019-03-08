@@ -52,7 +52,7 @@ function isAddingNewServerPreventedByGPO() {
 
   try {
     var regKey = new WindowsRegistry({
-      hive: Registry.HKCU,
+      hive: WindowsRegistry.HKCU,
       key:  '\\Software\\Policies\\Mattermost'
     })
     var regItemValue = getRegistryItemValue(regKey, "PreventAddNewServer")
@@ -61,7 +61,7 @@ function isAddingNewServerPreventedByGPO() {
     }
   } catch (RegistryItemNotFoundException) {
     var regKey = new WindowsRegistry({
-      hive: Registry.HKLM,
+      hive: WindowsRegistry.HKLM,
       key:  '\\Software\\Policies\\Mattermost'
     })
     var regItemValue = getRegistryItemValue(regKey, "PreventAddNewServer")
@@ -76,8 +76,8 @@ function getDefaultServerListFromGPO() {
   var servers = [];
   var registryItems = [];
   try {
-    var regKey = new Registry({
-      hive: Registry.HKCU,
+    var regKey = new WindowsRegistry({
+      hive: WindowsRegistry.HKCU,
       key:  '\\Software\\Policies\\Mattermost\\DefaultServerList'
     })
     regKey.values(function (err, items /* array of RegistryItem */) {
