@@ -191,8 +191,9 @@ function mergeDefaultTeams(servers) {
   return newServers;
 }
 
-function init(config, app) {
+function init(app) {
   configFile = app.getPath('userData') + '/config.json';
+  var config;
 
   try {
     console.log("DEBUG before read");
@@ -231,6 +232,9 @@ function init(config, app) {
   if (config.enableHardwareAcceleration === false) {
     app.disableHardwareAcceleration();
   }
+
+  console.log("DEBUG end of init version:" + config.version);
+  return config;
 }
 
 export default {
