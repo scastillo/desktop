@@ -215,3 +215,7 @@ function initSettings(config, app) {
     app.disableHardwareAcceleration();
   }
 }
+
+export default {
+  initSettings
+};
