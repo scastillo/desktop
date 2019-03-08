@@ -21,7 +21,7 @@ import upgradePreferences from './config/upgradePreferences';
 // C:/Users/<user>/AppData/Roaming/Mattermost/config.json
 // But userData can be overridden by data-dir passed as argument to the
 // final executable (all OS concerned).
-const configFile = "";
+const configFile;
 
 function merge(base, target) {
   return Object.assign({}, base, target);
