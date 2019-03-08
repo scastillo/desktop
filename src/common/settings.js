@@ -139,9 +139,12 @@ function upgrade(config) {
 }
 
 function readFileSync(configFile) {
+  console.log("HERE before");
   const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
   if (config.version === defaultPreferences.version) {
+    console.log("HERE in condition");
     const defaultConfig = loadDefault();
+    console.log("HERE after loadDefault");
     return merge(defaultConfig, config);
   }
   return config;
