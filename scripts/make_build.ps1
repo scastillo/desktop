@@ -41,23 +41,33 @@ Write-Host "Getting build date..."
 $env:MATTERMOST_BUILD_DATE = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd")
 
 Write-Host "Getting latest git tag..."
-$currentTag = $(git describe --abbrev=0)
+$currentTag = [string]$(git describe --abbrev=0)
+if ($env:APPVEYOR_REPO_TAG -eq $true) {
+    $env:MATTERMOST_BUILD_ID = $currentTag
+} else {
+    $env:MATTERMOST_BUILD_ID = [string]$(git describe)
+}
 
 Write-Host "Patching version from msi xml descriptor..."
 $msiDescriptorFileName = Join-Path -Path "$(Get-Location)" -ChildPath "scripts\msi_installer.wxs"
 $msiDescriptor = [xml](Get-Content $msiDescriptorFileName)
-$msiDescriptor.Wix.Product.Version = $currentTag
+$msiDescriptor.Wix.Product.Version = [string]$currentTag
 $msiDescriptor.Save($msiDescriptorFileName)
 
 Write-Host "Patching version from electron package.json..."
 $packageFileName = Join-Path -Path "$(Get-Location)" -ChildPath "src\package.json"
 $package = Get-Content $packageFileName | ConvertFrom-Json
-$package.version = $currentTag
+$package.version = [string]$currentTag
 $package | ConvertTo-Json | Set-Content $packageFileName
 
 Write-Host "Getting list of commits for changelog..."
 $previousTag = $(Invoke-Expression "git describe --abbrev=0 --tags $(git describe --abbrev=0)^")
-$env:MATTERMOST_BUILD_CHANGELOG = $(git log --oneline --since="$(git log -1 "$previousTag" --pretty=%ad)" --until="$(git log -1 "$currentTag" --pretty=%ad)")
+$changelogRaw = $(git log --oneline --since="$(git log -1 "$previousTag" --pretty=%ad)" --until="$(git log -1 "$currentTag" --pretty=%ad)")
+$changelog = "";
+foreach ($i in $changelogRaw) {
+    $changelog += "* $i`n"
+}
+$env:MATTERMOST_BUILD_CHANGELOG = $changelog
 
 Write-Host "Working directory:"
 Get-Location
@@ -162,11 +172,11 @@ $sw.Close();
 
 heat dir .\release\win-ia32-unpacked\ -o .\scripts\msi_installer_files.wxs -scom -frag -srd -sreg -gg -cg MattermostDesktopFiles -t .\scripts\msi_installer_files_replace_id.xslt -dr INSTALLDIR
 candle.exe -dPlatform=x86 .\scripts\msi_installer.wxs .\scripts\msi_installer_files.wxs -o .\scripts\
-light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -loc .\resources\windows\msi_i18n\en_US.wxl -o .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi -b ./release/win-ia32-unpacked/
+light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -loc .\resources\windows\msi_i18n\en_US.wxl -o .\release\mattermost-desktop-$($env:MATTERMOST_BUILD_ID)-x86.msi -b ./release/win-ia32-unpacked/
 
 heat dir .\release\win-unpacked\ -o .\scripts\msi_installer_files.wxs -scom -frag -srd -sreg -gg -cg MattermostDesktopFiles -t .\scripts\msi_installer_files_replace_id.xslt -t .\scripts\msi_installer_files_set_win64.xslt -dr INSTALLDIR
 candle.exe -dPlatform=x64 .\scripts\msi_installer.wxs .\scripts\msi_installer_files.wxs -o .\scripts\
-light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -loc .\resources\windows\msi_i18n\en_US.wxl -o .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x64.msi -b ./release/win-unpacked/
+light.exe .\scripts\msi_installer.wixobj .\scripts\msi_installer_files.wixobj -loc .\resources\windows\msi_i18n\en_US.wxl -o .\release\mattermost-desktop-$($env:MATTERMOST_BUILD_ID)-x64.msi -b ./release/win-unpacked/
 
 Write-Host "Signing .\release\mattermost-desktop-$($env:APPVEYOR_BUILD_NUMBER)-x86.msi (waiting for 15 seconds)..."
 Start-Sleep -s 15
