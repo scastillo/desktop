@@ -429,10 +429,7 @@ app.on('ready', () => {
   if (process.platform === 'win32') {
     // Keep only command line / deep linked argument. Make sure it's not squirrel command
     const tmpArgs = process.argv.slice(1);
-    if (
-      Array.isArray(tmpArgs) && tmpArgs.length > 0 &&
-      tmpArgs[0].match(/^--squirrel-/) === null
-    ) {
+    if (Array.isArray(tmpArgs) && tmpArgs.length > 0) {
       setDeeplinkingUrl(tmpArgs[0]);
     }
   }

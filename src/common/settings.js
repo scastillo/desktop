@@ -218,6 +218,7 @@ function init(config, app) {
 
 export default {
   init,
-  upgrade,
-  mergeDefaultTeams
+  mergeDefaultTeams,
+  writeFileSync,
+  upgrade
 };
