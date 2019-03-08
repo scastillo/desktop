@@ -194,7 +194,7 @@ function init(config, app) {
   try {
     console.log("DEBUG before read");
     config = readFileSync(configFile);
-    console.log("DEBUG after read");
+    console.log("DEBUG after read  config version:" = config.version);
     if (config.version !== defaultPreferences.version) {
       config = upgrade(config);
       writeFileSync(configFile, config);
