@@ -75,7 +75,7 @@ if (argv['data-dir']) {
 
 global.isDev = isDev && !argv.disableDevMode;
 
-let config = settings.init(config, app);
+let config = settings.init(app);
 config === undefined ? console.log("DEBUG Undefined") : console.log("DEBUG is ok version:" + config.version);
 
 ipcMain.on('update-config', () => {
