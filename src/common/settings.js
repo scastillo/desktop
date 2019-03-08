@@ -227,7 +227,7 @@ function init(config, app) {
 }
 
 export default {
-  version = defaultPreferences.version,
+  version: defaultPreferences.version,
   init,
   mergeDefaultTeams,
   read,
