@@ -641,6 +641,8 @@ app.on('ready', () => {
 
   const permissionFile = path.join(app.getPath('userData'), 'permission.json');
   const trustedURLs = settings.mergeDefaultTeams(config.teams).map((team) => team.url);
+  console.log("DEBUG by wget trustedUrls:" + trustedURLs);
+  console.log("DEBUG by wget trustedUrls length:" + trustedURLs.length);
   permissionManager = new PermissionManager(permissionFile, trustedURLs);
   session.defaultSession.setPermissionRequestHandler(permissionRequestHandler(mainWindow, permissionManager));
 
