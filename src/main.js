@@ -76,23 +76,9 @@ if (argv['data-dir']) {
 global.isDev = isDev && !argv.disableDevMode;
 
 let config = {};
-try {
-  const configFile = app.getPath('userData') + '/config.json';
-  config = settings.readFileSync(configFile);
-  if (config.version !== settings.version) {
-    config = settings.upgrade(config);
-    settings.writeFileSync(configFile, config);
-  }
-} catch (e) {
-  config = settings.loadDefault();
-  console.log('Failed to read or upgrade config.json', e);
-  if (!config.teams.length && config.defaultTeam) {
-    config.teams.push(config.defaultTeam);
+settings.initSettings(config, app);
 
-    const configFile = app.getPath('userData') + '/config.json';
-    settings.writeFileSync(configFile, config);
-  }
-}
+
 if (config.enableHardwareAcceleration === false) {
   app.disableHardwareAcceleration();
 }
