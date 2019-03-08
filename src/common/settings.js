@@ -218,7 +218,13 @@ function init(app) {
     if (isAddingNewServerPreventedByGPO()) {
       config.teams = getDefaultServerListFromGPO();
     } else {
-      config.teams.push(getDefaultServerListFromGPO());
+      newServers = getDefaultServerListFromGPO();
+      // Only add if we have actually serves, otherwise an empty array + an
+      // empty array will be considered as an array of one element in
+      // JS/nodejs.
+      if (newServers.length > 0) {
+        config.teams.push(newServers);
+      }
     }
   }
   
