@@ -76,12 +76,10 @@ if (argv['data-dir']) {
 global.isDev = isDev && !argv.disableDevMode;
 
 let config = {};
-settings.initSettings(config, app);
+settings.init(config, app);
 
 
-if (config.enableHardwareAcceleration === false) {
-  app.disableHardwareAcceleration();
-}
+
 
 ipcMain.on('update-config', () => {
   const configFile = app.getPath('userData') + '/config.json';

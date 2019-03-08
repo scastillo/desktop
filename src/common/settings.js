@@ -168,7 +168,7 @@ function mergeDefaultTeams(servers) {
   return newServers;
 }
 
-function initSettings(config, app) {
+function init(config, app) {
   // appData is
   // * On Windows: %APPDATA%
   // * On GNU/Linux: $XDG_CONFIG_HOME or ~/.config
@@ -217,5 +217,7 @@ function initSettings(config, app) {
 }
 
 export default {
-  initSettings
+  init,
+  upgrade,
+  mergeDefaultTeams
 };
