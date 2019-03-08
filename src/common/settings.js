@@ -110,7 +110,7 @@ function getDefaultServerListFromGPO() {
       registryItems = items;
     });
   }
-console.log("IN getDefaultServerListFromGPO");
+
   for (var i = 0; i < registryItems.length; i++) {
     var server = []
     var nameTokenized = registryItems[i].name.split("|");
@@ -128,7 +128,6 @@ console.log("IN getDefaultServerListFromGPO");
       server.index = nameTokenized[0];
     }
     server.url = registryItems[i].value;
-    console.log("SERVER URL" + server.url);
     servers.push(server);
   }
 
@@ -140,12 +139,9 @@ function upgrade(config) {
 }
 
 function readFileSync(configFile) {
-  console.log("HERE before");
   const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
   if (config.version === defaultPreferences.version) {
-    console.log("HERE in condition");
     const defaultConfig = loadDefault();
-    console.log("HERE after loadDefault");
     return merge(defaultConfig, config);
   }
   return config;
@@ -197,13 +193,9 @@ function init(app) {
   var config;
 
   try {
-    console.log("DEBUG before read");
     config = readFileSync(configFile);
-    console.log("DEBUG after read  config version:" + config.version);
     if (config.version !== defaultPreferences.version) {
-      console.log("DEBUG before upgrade:" + config.version);
       config = upgrade(config);
-      console.log("DEBUG after upgrade:" + config.version);
       writeFileSync(configFile, config);
     }
   } catch (e) {
@@ -234,7 +226,6 @@ function init(app) {
     app.disableHardwareAcceleration();
   }
 
-  console.log("DEBUG end of init version:" + config.version);
   return config;
 }
 

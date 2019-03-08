@@ -76,7 +76,6 @@ if (argv['data-dir']) {
 global.isDev = isDev && !argv.disableDevMode;
 
 let config = settings.init(app);
-config === undefined ? console.log("DEBUG Undefined") : console.log("DEBUG is ok version:" + config.version);
 
 ipcMain.on('update-config', () => {
   config = settings.read();
@@ -642,7 +641,6 @@ app.on('ready', () => {
 
   const permissionFile = path.join(app.getPath('userData'), 'permission.json');
   const trustedURLs = settings.mergeDefaultTeams(config.teams).map((team) => team.url);
-  console.log("DEBUG PermissionManager trustedURLs:" + trustedURLs);
   permissionManager = new PermissionManager(permissionFile, trustedURLs);
   session.defaultSession.setPermissionRequestHandler(permissionRequestHandler(mainWindow, permissionManager));
 
