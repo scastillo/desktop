@@ -213,17 +213,33 @@ function init(app) {
   }
 
   if (process.platform == "win32") {
-    // If the user cannot have their own servers, override with the ones defined
-    // in GPO.
+    // If the user cannot have their own servers, overwrite by the ones
+    // defined in GPO.
     if (isAddingNewServerPreventedByGPO()) {
-      config.teams = getDefaultServerListFromGPO();
+      try {
+        config.teams = getDefaultServerListFromGPO();
+      } catch (e) {
+        if (e instanceof RegistryItemNotFoundException) {
+          console.log(
+            "The user cannot add new servers as this is prevented by GPO, " +
+            "but no default server has been found by GPO.");
+        }
+      }
     } else {
-      var newServers = getDefaultServerListFromGPO();
-      // Only add if we have actually serves, otherwise an empty array + an
-      // empty array will be considered as an array of one element in
-      // JS/nodejs.
-      if (newServers.length > 0) {
-        config.teams.push(newServers);
+      try {
+        var newServers = getDefaultServerListFromGPO();
+        // Append to the list only if we actually have servers, otherwise
+        // an empty array + an empty array will be considered as an array
+        // of one element in the JS/nodejs.
+        if (newServers.length > 0) {
+          config.teams.push(newServers);
+        }
+      } catch (e) {
+        if (e instanceof RegistryItemNotFoundException) {
+          console.log(
+            "The user can add new servers as this is not prevented by GPO, " +
+            "but no default server has been found by GPO.");
+        }
       }
     }
   }
