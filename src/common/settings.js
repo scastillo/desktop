@@ -157,6 +157,16 @@ function writeFileSync(configFile, config) {
   fs.writeFileSync(configFile, data, 'utf8');
 }
 
+function read() {
+  const configFile = app.getPath('userData') + '/config.json';
+  return readFileSync(configFile);
+}
+
+function save(config) {
+  const configFile = app.getPath('userData') + '/config.json';
+  writeFileSync(configFile, config);
+}
+
 function mergeDefaultTeams(servers) {
   const newServers = [];
   if (hasBuildConfigDefaultTeams(buildConfig)) {
@@ -217,8 +227,10 @@ function init(config, app) {
 }
 
 export default {
+  version = defaultPreferences.version,
   init,
   mergeDefaultTeams,
-  writeFileSync,
+  read,
+  save,
   upgrade
 };

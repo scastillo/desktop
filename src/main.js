@@ -82,8 +82,7 @@ settings.init(config, app);
 
 
 ipcMain.on('update-config', () => {
-  const configFile = app.getPath('userData') + '/config.json';
-  config = settings.readFileSync(configFile);
+  config = settings.read();
   if (process.platform === 'win32' || process.platform === 'linux') {
     const appLauncher = new AutoLauncher();
     const autoStartTask = config.autostart ? appLauncher.enable() : appLauncher.disable();
@@ -404,8 +403,7 @@ app.on('ready', () => {
 
   if (!config.spellCheckerLocale) {
     config.spellCheckerLocale = SpellChecker.getSpellCheckerLocale(app.getLocale());
-    const configFile = app.getPath('userData') + '/config.json';
-    settings.writeFileSync(configFile, config);
+    settings.save(config);
   }
 
   const appStateJson = path.join(app.getPath('userData'), 'app-state.json');
