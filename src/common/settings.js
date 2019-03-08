@@ -219,11 +219,9 @@ function init(app) {
       try {
         config.teams = getDefaultServerListFromGPO();
       } catch (e) {
-        if (e instanceof RegistryItemNotFoundException) {
-          console.log(
-            "The user cannot add new servers as this is prevented by GPO, " +
-            "but no default server has been found by GPO.");
-        }
+        console.log(
+          "The user cannot add new servers as this is prevented by GPO, " +
+          "but no default server has been found by GPO.");
       }
     } else {
       try {
@@ -235,11 +233,9 @@ function init(app) {
           config.teams.push(newServers);
         }
       } catch (e) {
-        if (e instanceof RegistryItemNotFoundException) {
-          console.log(
-            "The user can add new servers as this is not prevented by GPO, " +
-            "but no default server has been found by GPO.");
-        }
+        console.log(
+          "The user can add new servers as this is not prevented by GPO, " +
+          "but no default server has been found by GPO.");
       }
     }
   }
