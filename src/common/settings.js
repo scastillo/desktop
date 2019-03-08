@@ -11,6 +11,18 @@ import buildConfig from './config/buildConfig';
 import defaultPreferences from './config/defaultPreferences';
 import upgradePreferences from './config/upgradePreferences';
 
+// appData is
+// * On Windows: %APPDATA%
+// * On GNU/Linux: $XDG_CONFIG_HOME or ~/.config
+// * On macOS: ~/Library/Application Support
+// userData is by default appData appended by the app name.
+// Contrary to the popular belief, on Windows, AppData leads to AppData/Roaming.
+// The config.json resides thus by default in
+// C:/Users/<user>/AppData/Roaming/Mattermost/config.json
+// But userData can be overridden by data-dir passed as argument to the
+// final executable (all OS concerned).
+const configFile = "";
+
 function merge(base, target) {
   return Object.assign({}, base, target);
 }
@@ -158,12 +170,10 @@ function writeFileSync(configFile, config) {
 }
 
 function read() {
-  const configFile = app.getPath('userData') + '/config.json';
   return readFileSync(configFile);
 }
 
 function save(config) {
-  const configFile = app.getPath('userData') + '/config.json';
   writeFileSync(configFile, config);
 }
 
@@ -179,17 +189,7 @@ function mergeDefaultTeams(servers) {
 }
 
 function init(config, app) {
-  // appData is
-  // * On Windows: %APPDATA%
-  // * On GNU/Linux: $XDG_CONFIG_HOME or ~/.config
-  // * On macOS: ~/Library/Application Support
-  // userData is by default appData appended by the app name.
-  // Contrary to the popular belief, on Windows, AppData leads to AppData/Roaming.
-  // The config.json resides thus by default in
-  // C:/Users/<user>/AppData/Roaming/Mattermost/config.json
-  // But userData can be overridden by data-dir passed as argument to the
-  // final executable (all OS concerned).
-  const configFile = app.getPath('userData') + '/config.json';
+  configFile = app.getPath('userData') + '/config.json';
 
   try {
     config = readFileSync(configFile);

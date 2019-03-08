@@ -78,9 +78,6 @@ global.isDev = isDev && !argv.disableDevMode;
 let config = {};
 settings.init(config, app);
 
-
-
-
 ipcMain.on('update-config', () => {
   config = settings.read();
   if (process.platform === 'win32' || process.platform === 'linux') {
