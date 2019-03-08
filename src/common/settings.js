@@ -192,10 +192,11 @@ function init(config, app) {
   configFile = app.getPath('userData') + '/config.json';
 
   try {
+    console.log("DEBUG before read");
     config = readFileSync(configFile);
+    console.log("DEBUG after read");
     if (config.version !== defaultPreferences.version) {
       config = upgrade(config);
-      console.log("DEBUG init cond writeSync");
       writeFileSync(configFile, config);
     }
   } catch (e) {
