@@ -110,7 +110,7 @@ function getDefaultServerListFromGPO() {
       registryItems = items;
     });
   }
-
+console.log("IN getDefaultServerListFromGPO");
   for (var i = 0; i < registryItems.length; i++) {
     var server = []
     var nameTokenized = registryItems[i].name.split("|");
