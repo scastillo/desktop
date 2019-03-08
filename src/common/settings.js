@@ -204,7 +204,7 @@ function init(config, app) {
   if (process.platform == "win32") {
     // If the user cannot have their own servers, override with the ones defined
     // in GPO.
-    if (isAddingNewServerPrevented()) {
+    if (isAddingNewServerPreventedByGPO()) {
       config.teams = getDefaultServerListFromGPO();
     } else {
       config.teams.push(getDefaultServerListFromGPO());
