@@ -5,7 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import winreg from 'winreg';
+import WindowsRegistry from 'winreg';
 
 import buildConfig from './config/buildConfig';
 import defaultPreferences from './config/defaultPreferences';
@@ -51,7 +51,7 @@ function getRegistryItemValue(regKey, item) {
 function isAddingNewServerPreventedByGPO() {
 
   try {
-    var regKey = new Registry({
+    var regKey = new WindowsRegistry({
       hive: Registry.HKCU,
       key:  '\\Software\\Policies\\Mattermost'
     })
@@ -60,7 +60,7 @@ function isAddingNewServerPreventedByGPO() {
       return true;
     }
   } catch (RegistryItemNotFoundException) {
-    var regKey = new Registry({
+    var regKey = new WindowsRegistry({
       hive: Registry.HKLM,
       key:  '\\Software\\Policies\\Mattermost'
     })
