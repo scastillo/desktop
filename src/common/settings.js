@@ -80,7 +80,7 @@ function getDefaultServerListFromGPO() {
       hive: WindowsRegistry.HKCU,
       key:  '\\Software\\Policies\\Mattermost\\DefaultServerList'
     })
-    regKey.values(function (err, items /* array of RegistryItem */) {
+    regKey.values(function(err, items /* array of RegistryItem */) {
       if (err) {
         throw new RegistryItemNotFoundException(err);
       }
@@ -91,7 +91,7 @@ function getDefaultServerListFromGPO() {
       hive: Registry.HKLM,
       key:  '\\Software\\Policies\\Mattermost\\DefaultServerList'
     })
-    regKey.values(function (err, items /* array of RegistryItem */) {
+    regKey.values(function(err, items /* array of RegistryItem */) {
       if (err) {
         throw new RegistryItemNotFoundException(err);
       }
@@ -99,9 +99,9 @@ function getDefaultServerListFromGPO() {
     });
   }
 
-  for (var i = 0; i < items.length; i++) {
+  for (var i = 0; i < registryItems.length; i++) {
     var server = []
-    var nameTokenized = items[i].name.split("|");
+    var nameTokenized = registryItems[i].name.split("|");
 
     if (typeof nameTokenized[0] != "number") {
       for(var i = 0; i < nameTokenized.length; i++) {
@@ -115,7 +115,7 @@ function getDefaultServerListFromGPO() {
       }
       server.index = nameTokenized[0];
     }
-    server.url = items[i].value;
+    server.url = registryItems[i].value;
     servers.push(server);
   }
 
