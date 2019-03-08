@@ -201,7 +201,7 @@ function init(config, app) {
     }
   }
 
-  if (platform == "win32") {
+  if (process.platform == "win32") {
     // If the user cannot have their own servers, override with the ones defined
     // in GPO.
     if (isAddingNewServerPrevented()) {
