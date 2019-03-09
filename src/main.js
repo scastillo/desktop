@@ -74,7 +74,7 @@ if (argv['data-dir']) {
 }
 
 global.isDev = isDev && !argv.disableDevMode;
-try {
+
 let config = settings.init(app);
 
 ipcMain.on('update-config', () => {
@@ -689,4 +689,3 @@ app.on('web-contents-created', (dc, contents) => {
     event.preventDefault();
   });
 });
-} catch (e) {}

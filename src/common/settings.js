@@ -225,7 +225,7 @@ function init(app) {
   if (process.platform == "win32") {
     // If the user cannot have their own servers, overwrite by the ones
     // defined in GPO.
-    if (isAddingNewServerPreventedByGPO()) {
+   /* if (isAddingNewServerPreventedByGPO()) {
       try {
         config.teams = getDefaultServerListFromGPO();
       } catch (e) {
@@ -235,19 +235,13 @@ function init(app) {
       }
     } else {
       try {
-        var newServers = getDefaultServerListFromGPO();
-        // Append to the list only if we actually have servers, otherwise
-        // an empty array + an empty array will be considered as an array
-        // of one element in the JS/nodejs.
-        if (newServers.length > 0) {
-          config.teams.push(newServers);
-        }
+        config.teams = config.teams.concat(getDefaultServerListFromGPO());
       } catch (e) {
         console.log(
           "The user can add new servers as this is not prevented by GPO, " +
           "but no default server has been found by GPO.");
       }
-    }
+    }*/
   }
   
   if (config.enableHardwareAcceleration === false) {
