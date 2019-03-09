@@ -45,7 +45,7 @@ function RegistryItemNotFoundException(msg) {
 function getRegistryItemValue(regKey, item) {
   regKey.values(function (err, items /* array of RegistryItem */) {
     if (err) {
-      throw new RegistryItemNotFoundException(err.toString());
+      throw new RegistryItemNotFoundException(err.message);
     }
 
     var i;
@@ -55,7 +55,7 @@ function getRegistryItemValue(regKey, item) {
       }
     }
     if (i == items.length) {
-      throw new RegistryItemNotFoundException(err.toString());
+      throw new RegistryItemNotFoundException(err.message);
     }
   });
 }
@@ -104,7 +104,7 @@ function getDefaultServerListFromGPO() {
     });
     regKey.values(function(err, items /* array of RegistryItem */) {
       if (err) {
-        throw new RegistryItemNotFoundException(err.toString());
+        throw new RegistryItemNotFoundException(err.message);
       }
       registryItems = items;
     });
@@ -115,7 +115,7 @@ function getDefaultServerListFromGPO() {
     });
     regKey.values(function(err, items /* array of RegistryItem */) {
       if (err) {
-        throw new RegistryItemNotFoundException(err.toString());
+        throw new RegistryItemNotFoundException(err.message);
       }
       registryItems = items;
     });
