@@ -223,7 +223,6 @@ function init(app) {
   }
 
   if (process.platform == "win32") {
-    try {
     // If the user cannot have their own servers, overwrite by the ones
     // defined in GPO.
     if (isAddingNewServerPreventedByGPO()) {
@@ -249,7 +248,6 @@ function init(app) {
           "but no default server has been found by GPO.");
       }
     }
-  } catch (e) {}
   }
   
   if (config.enableHardwareAcceleration === false) {
