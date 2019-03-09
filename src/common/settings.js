@@ -45,7 +45,7 @@ function RegistryItemNotFoundException(msg) {
 function getRegistryItemValue(regKey, item) {
   regKey.values(function (err, items /* array of RegistryItem */) {
     if (err) {
-      throw new RegistryItemNotFoundException(err);
+      throw new RegistryItemNotFoundException(err.toString());
     }
 
     var i;
@@ -55,7 +55,7 @@ function getRegistryItemValue(regKey, item) {
       }
     }
     if (i == items.length) {
-      throw new RegistryItemNotFoundException(err);
+      throw new RegistryItemNotFoundException(err.toString());
     }
   });
 }
@@ -66,19 +66,29 @@ function isAddingNewServerPreventedByGPO() {
     var regKey = new WindowsRegistry({
       hive: WindowsRegistry.HKCU,
       key:  '\\Software\\Policies\\Mattermost'
-    })
-    var regItemValue = getRegistryItemValue(regKey, "PreventAddNewServer")
+    });
+    var regItemValue = getRegistryItemValue(regKey, "PreventAddNewServer");
     if (regItemValue === 1) {
       return true;
     }
-  } catch (RegistryItemNotFoundException) {
+  } catch (e) {
+    if (!(e instanceof RegistryItemNotFoundException)) {
+      throw e;
+    }
+  }
+
+  try {
     var regKey = new WindowsRegistry({
       hive: WindowsRegistry.HKLM,
       key:  '\\Software\\Policies\\Mattermost'
-    })
-    var regItemValue = getRegistryItemValue(regKey, "PreventAddNewServer")
+    });
+    var regItemValue = getRegistryItemValue(regKey, "PreventAddNewServer");
     if (regItemValue === 1) {
       return true;
+    }
+  } catch (e) {
+    if (!(e instanceof RegistryItemNotFoundException)) {
+      throw e;
     }
   }
   return false;
@@ -91,10 +101,10 @@ function getDefaultServerListFromGPO() {
     var regKey = new WindowsRegistry({
       hive: WindowsRegistry.HKCU,
       key:  '\\Software\\Policies\\Mattermost\\DefaultServerList'
-    })
+    });
     regKey.values(function(err, items /* array of RegistryItem */) {
       if (err) {
-        throw new RegistryItemNotFoundException(err);
+        throw new RegistryItemNotFoundException(err.toString());
       }
       registryItems = items;
     });
@@ -102,10 +112,10 @@ function getDefaultServerListFromGPO() {
     var regKey = new Registry({
       hive: Registry.HKLM,
       key:  '\\Software\\Policies\\Mattermost\\DefaultServerList'
-    })
+    });
     regKey.values(function(err, items /* array of RegistryItem */) {
       if (err) {
-        throw new RegistryItemNotFoundException(err);
+        throw new RegistryItemNotFoundException(err.toString());
       }
       registryItems = items;
     });
@@ -215,7 +225,6 @@ function init(app) {
   if (process.platform == "win32") {
     // If the user cannot have their own servers, overwrite by the ones
     // defined in GPO.
-    try {
     if (isAddingNewServerPreventedByGPO()) {
       try {
         config.teams = getDefaultServerListFromGPO();
@@ -239,9 +248,6 @@ function init(app) {
           "but no default server has been found by GPO.");
       }
     }
-  } catch(e) {
-    console.log("An error occurred with isAddingNewServerPreventedByGPO():" + e);
-  }
   }
   
   if (config.enableHardwareAcceleration === false) {
